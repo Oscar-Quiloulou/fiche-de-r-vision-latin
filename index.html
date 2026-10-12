@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Latin – Temps primitifs & Conjugaisons</title>
+<style>
+  :root{
+    --bg:#f4f1ea;
+    --card:#ffffff;
+    --accent:#8b2e2e;
+    --accent-dark:#5e1f1f;
+    --ok:#2e7d32;
+    --ko:#c62828;
+    --border:#ddd6c8;
+    --text:#2b2b2b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", Calibri, Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.5;
+  }
+  header{
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    color:#fff;
+    padding:28px 20px;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+  }
+  header h1{margin:0 0 6px;font-size:1.7rem;}
+  header p{margin:0;opacity:.9;font-size:.95rem;}
+  nav{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    background:#fff;
+    padding:12px;
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+  nav button{
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--accent-dark);
+    padding:8px 18px;
+    border-radius:20px;
+    cursor:pointer;
+    font-size:.95rem;
+    transition:.2s;
+  }
+  nav button:hover{background:#f7f3ec;}
+  nav button.active{
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent);
+  }
+  main{
+    max-width:900px;
+    margin:24px auto 60px;
+    padding:0 16px;
+  }
+  section{display:none;}
+  section.visible{display:block;animation:fade .3s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:20px 24px;
+    margin-bottom:20px;
+    box-shadow:0 2px 6px rgba(0,0,0,.05);
+  }
+  .card h2{
+    margin-top:0;
+    color:var(--accent);
+    font-size:1.2rem;
+    border-bottom:2px solid var(--border);
+    padding-bottom:6px;
+  }
+  .card h3{
+    color:var(--accent-dark);
+    font-size:1.02rem;
+    margin-bottom:6px;
+  }
+  ul{padding-left:20px;margin:6px 0;}
+  li{margin-bottom:4px;}
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:10px 0;
+    font-size:.92rem;
+  }
+  th,td{
+    border:1px solid var(--border);
+    padding:6px 8px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{background:#f7f3ec;color:var(--accent-dark);}
+  tr:nth-child(even) td{background:#fbf9f5;}
+
+  .badge{
+    display:inline-block;
+    background:#f0e6d8;
+    color:var(--accent-dark);
+    border-radius:6px;
+    padding:1px 7px;
+    font-size:.8rem;
+    font-weight:600;
+  }
+  .memo{
+    background:#fff8e1;
+    border-left:4px solid #f0ad4e;
+    padding:10px 14px;
+    border-radius:6px;
+    font-size:.92rem;
+  }
+
+  /* QUIZ */
+  .q{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px 20px;
+    margin-bottom:14px;
+    box-shadow:0 1px 4px rgba(0,0,0,.05);
+  }
+  .q .qnum{
+    font-size:.8rem;
+    font-weight:700;
+    color:var(--accent);
+    text-transform:uppercase;
+    letter-spacing:.5px;
+  }
+  .q .qtext{
+    font-weight:600;
+    margin:4px 0 12px;
+  }
+  .options{display:flex;flex-direction:column;gap:6px;}
+  .options label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    cursor:pointer;
+    transition:.15s;
+    background:#fff;
+  }
+  .options label:hover{background:#f9f6f0;}
+  .options input{margin:0;accent-color:var(--accent);}
+  .options label.correct{background:#e8f5e9;border-color:var(--ok);}
+  .options label.wrong{background:#ffebee;border-color:var(--ko);}
+  .feedback{
+    margin-top:10px;
+    font-size:.9rem;
+    font-weight:600;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.ok{color:var(--ok);}
+  .feedback.ko{color:var(--ko);}
+
+  .quiz-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+    margin:24px 0 10px;
+  }
+  .btn{
+    border:none;
+    border-radius:8px;
+    padding:10px 22px;
+    font-size:1rem;
+    cursor:pointer;
+    transition:.2s;
+    font-weight:600;
+  }
+  .btn-primary{background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:var(--accent-dark);}
+  .btn-secondary{background:#e8e2d6;color:var(--accent-dark);}
+  .btn-secondary:hover{background:#d9d1bf;}
+
+  #score{
+    text-align:center;
+    font-size:1.15rem;
+    font-weight:700;
+    color:var(--accent-dark);
+    margin-top:14px;
+    min-height:1.4em;
+  }
+  #score .big{font-size:1.6rem;color:var(--accent);}
+
+  footer{
+    text-align:center;
+    font-size:.85rem;
+    color:#8a8a8a;
+    padding:20px;
+  }
+
+  @media (max-width:520px){
+    header h1{font-size:1.3rem;}
+    .card{padding:16px;}
+    table{font-size:.82rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Latin – Temps primitifs &amp; Conjugaisons</h1>
+  <p>Fiche de révision + Quiz interactif</p>
+</header>
+
+<nav>
+  <button class="active" data-target="fiche">📖 Fiche</button>
+  <button data-target="quiz">📝 Quiz</button>
+</nav>
+
+<main>
+
+  <!-- ===================== FICHE ===================== -->
+  <section id="fiche" class="visible">
+
+    <div class="card">
+      <h2>1. Les temps primitifs</h2>
+      <p>Un verbe latin est présenté avec <strong>5 formes</strong> :<br>
+        <code>amo, -as, -are, -avi, -atum</code> = <em>amo, amas, amare, amavi, amatum</em>
+      </p>
+      <ul>
+        <li><strong>3 premières formes</strong> → identifient la <strong>conjugaison</strong>.</li>
+        <li><strong>2 dernières formes</strong> → donnent le <strong>parfait</strong> et le <strong>supin</strong>.</li>
+        <li><strong>3 radicaux</strong> : présent / parfait / supin.
+          <ul>
+            <li>Présent : infinitif sans <strong>-re</strong> (1ʳᵉ, 2ᵉ, 4ᵉ) ou sans <strong>-ere</strong> (3ᵉ et mixte).</li>
+            <li>Parfait : forme du parfait sans <strong>-i</strong>.</li>
+            <li>Supin : forme du supin sans <strong>-um</strong>.</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>2. Les 5 conjugaisons</h2>
+      <table>
+        <tr><th>Conjugaison</th><th>Terminaisons types</th></tr>
+        <tr><td>1ʳᵉ</td><td>-o, -as, -are</td></tr>
+        <tr><td>2ᵉ</td><td>-eo, -es, -ere</td></tr>
+        <tr><td>3ᵉ</td><td>-o, -is, -ere</td></tr>
+        <tr><td>4ᵉ</td><td>-io, -is, -ire</td></tr>
+        <tr><td>4ᵉ mixte</td><td>-io, -is, -ere</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>3. Verbes à connaître</h2>
+      <table>
+        <tr>
+          <th>Verbe (temps primitifs)</th>
+          <th>Conj.</th>
+          <th>Radicaux (prés. / parf. / sup.)</th>
+          <th>Sens</th>
+        </tr>
+        <tr><td>ago, -is, -ere, egi, actum</td><td>3ᵉ</td><td>ag- / eg- / act-</td><td>mettre en mouvement</td></tr>
+        <tr><td>animo, -as, -are, -avi, -atum</td><td>1ʳᵉ</td><td>anima- / animav- / animat-</td><td>animer, donner la vie</td></tr>
+        <tr><td>aspicio, -is, -ere, -spexi, -spectum</td><td>4ᵉ mixte</td><td>aspic- / aspex- / aspect-</td><td>regarder</td></tr>
+        <tr><td>audio, -is, -ire, -ivi, -itum</td><td>4ᵉ</td><td>audi- / audiv- / audit-</td><td>entendre</td></tr>
+        <tr><td>caedo, -is, -ere, cecidi, caesum</td><td>3ᵉ</td><td>caed- / cecid- / caes-</td><td>frapper, abattre</td></tr>
+        <tr><td>censeo, -es, -ere, -sui, -sum</td><td>2ᵉ</td><td>cense- / censu- / cens-</td><td>estimer, évaluer</td></tr>
+        <tr><td>celo, -as, -are, -avi, -atum</td><td>1ʳᵉ</td><td>cela- / celav- / celat-</td><td>tenir caché</td></tr>
+        <tr><td>cingo, -is, -ere, cinxi, cinctum</td><td>3ᵉ</td><td>cing- / cinx- / cinct-</td><td>ceindre, entourer</td></tr>
+        <tr><td>claudio, -is, -ere, clausi, clausum</td><td>3ᵉ</td><td>claud- / claus- / claus-</td><td>fermer, clore</td></tr>
+        <tr><td>custodio, -is, -ire, -ivi, -itum</td><td>4ᵉ</td><td>custodi- / custodiv- / custodit-</td><td>protéger, défendre</td></tr>
+        <tr><td>scribo, -is, -ere, scripsi, scriptum</td><td>3ᵉ</td><td>scrib- / scrips- / script-</td><td>écrire</td></tr>
+        <tr><td>venio, -is, -ire, veni, ventum</td><td>4ᵉ</td><td>veni- / ven- / vent-</td><td>venir</td></tr>
+        <tr><td>pareo, -es, -ere, -ui, -itum</td><td>2ᵉ</td><td>pare- / paru- / parit-</td><td>apparaître</td></tr>
+      </table>
+
+      <div class="memo">
+        <strong>💡 Astuce mémo :</strong><br>
+        <span class="badge">-are</span> → 1ʳᵉ &nbsp;
+        <span class="badge">-ere + -eo</span> → 2ᵉ &nbsp;
+        <span class="badge">-ere + -o</span> → 3ᵉ &nbsp;
+        <span class="badge">-ire + -io</span> → 4ᵉ &nbsp;
+        <span class="badge">-ere + -io</span> → 4ᵉ mixte
+      </div>
+    </div>
+
+    <div class="quiz-actions">
+      <button class="btn btn-primary" onclick="showTab('quiz')">Aller au quiz →</button>
+    </div>
+
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <section id="quiz">
+    <div class="card" style="text-align:center;">
+      <h2>Quiz interactif</h2>
+      <p style="margin:0;font-size:.95rem;">Réponds à toutes les questions puis clique sur <strong>Vérifier mes réponses</strong>. Tu pourras recommencer autant de fois que tu veux !</p>
+    </div>
+
+    <div id="quizContainer"></div>
+
+    <div class="quiz-actions">
+      <button class="btn btn-primary" id="checkBtn">✅ Vérifier mes réponses</button>
+      <button class="btn btn-secondary" id="resetBtn">🔄 Recommencer</button>
+    </div>
+
+    <div id="score"></div>
+  </section>
+
+</main>
+
+<footer>Fiche de révision – Latin · Bon courage !</footer>
+
+<script>
+/* ---------- NAVIGATION ---------- */
+function showTab(id){
+  document.querySelectorAll('nav button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.target===id);
+  });
+  document.querySelectorAll('section').forEach(s=>{
+    s.classList.toggle('visible', s.id===id);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click',()=>showTab(b.dataset.target));
+});
+
+/* ---------- DONNÉES DU QUIZ ---------- */
+const questions = [
+  // --- Théorie ---
+  {q:"Que sont les « temps primitifs » d'un verbe latin ?",
+   opts:["Les 5 formes sous lesquelles un verbe est présenté dans le dictionnaire",
+         "Les 5 temps de l'indicatif latin",
+         "Les terminaisons de la 1ère conjugaison",
+         "Les 5 cas de la déclinaison latine"],
+   correct:0,
+   exp:"Les temps primitifs sont les 5 formes qui permettent d'identifier la conjugaison et de savoir conjuguer le verbe."},
+
+  {q:"Combien de conjugaisons existe-t-il en latin ?",
+   opts:["3","4","5 (4 + 1 mixte)","6"],
+   correct:2,
+   exp:"Il y a 4 conjugaisons, plus une conjugaison mixte, soit 5 au total."},
+
+  {q:"À quoi servent les 3 premières formes des temps primitifs ?",
+   opts:["À connaître le sens du verbe",
+         "À identifier la conjugaison du verbe",
+         "À former le parfait",
+         "À former le supin"],
+   correct:1,
+   exp:"Les 3 premières formes (ex. amo, -as, -are) servent à identifier la conjugaison."},
+
+  {q:"À quoi servent les 2 dernières formes des temps primitifs ?",
+   opts:["À identifier la conjugaison",
+         "À connaître le genre du verbe",
+         "À savoir comment conjuguer le verbe en particulier (parfait et supin)",
+         "À traduire le verbe"],
+   correct:2,
+   exp:"Elles donnent le parfait et le supin, utiles pour la conjugaison propre au verbe."},
+
+  {q:"Dans « amo, -as, -are, -avi, -atum », que désigne « amatum » ?",
+   opts:["Le présent","Le parfait","Le supin","L'infinitif futur"],
+   correct:2,
+   exp:"« amatum » est le supin : « pour aimer »."},
+
+  {q:"Vrai ou faux : chaque verbe latin possède 3 radicaux.",
+   opts:["Vrai","Faux"],
+   correct:0,
+   exp:"Oui : radical du présent, radical du parfait, radical du supin."},
+
+  {q:"À quelle conjugaison appartient un verbe en « -eo, -es, -ere » ?",
+   opts:["1ʳᵉ","2ᵉ","3ᵉ","4ᵉ mixte"],
+   correct:1,
+   exp:"C'est la 2ᵉ conjugaison."},
+
+  {q:"À quelle conjugaison appartient un verbe en « -io, -is, -ere » ?",
+   opts:["1ʳᵉ","2ᵉ","3ᵉ","4ᵉ mixte"],
+   correct:3,
+   exp:"C'est la 4ᵉ conjugaison mixte."},
+
+  // --- Identifier la conjugaison ---
+  {q:"« ago, -is, -ere » appartient à quelle conjugaison ?",
+   opts:["1ʳᵉ","2ᵉ","3ᵉ","4ᵉ"],
+   correct:2,
+   exp:"-o, -is, -ere → 3ᵉ conjugaison."},
+
+  {q:"« animo, -as, -are » appartient à quelle conjugaison ?",
+   opts:["1ʳᵉ","2ᵉ","3ᵉ","4ᵉ"],
+   correct:0,
+   exp:"-o, -as, -are → 1ʳᵉ conjugaison."},
+
+  {q:"« audio, -is, -ire » appartient à quelle conjugaison ?",
+   opts:["1ʳᵉ","3ᵉ","4ᵉ","4ᵉ mixte"],
+   correct:2,
+   exp:"-io, -is, -ire → 4ᵉ conjugaison."},
+
+  {q:"« censeo, -es, -ere » appartient à quelle conjugaison ?",
+   opts:["1ʳᵉ","2ᵉ","3ᵉ","4ᵉ"],
+   correct:1,
+   exp:"-eo, -es, -ere → 2ᵉ conjugaison."},
+
+  {q:"« aspicio, -is, -ere » appartient à quelle conjugaison ?",
+   opts:["2ᵉ","3ᵉ","4ᵉ","4ᵉ mixte"],
+   correct:3,
+   exp:"-io, -is, -ere → 4ᵉ conjugaison mixte."},
+
+  {q:"« custodio, -is, -ire » appartient à quelle conjugaison ?",
+   opts:["1ʳᵉ","3ᵉ","4ᵉ","4ᵉ mixte"],
+   correct:2,
+   exp:"-io, -is, -ire → 4ᵉ conjugaison."},
+
+  {q:"« pareo, -es, -ere » appartient à quelle conjugaison ?",
+   opts:["1ʳᵉ","2ᵉ","3ᵉ","4ᵉ"],
+   correct:1,
+   exp:"-eo, -es, -ere → 2ᵉ conjugaison."},
+
+  {q:"« scribo, -is, -ere » appartient à quelle conjugaison ?",
+   opts:["1ʳᵉ","2ᵉ","3ᵉ","4ᵉ"],
+   correct:2,
+   exp:"-o, -is, -ere → 3ᵉ conjugaison."},
+
+  {q:"« venio, -is, -ire » appartient à quelle conjugaison ?",
+   opts:["1ʳᵉ","3ᵉ","4ᵉ","4ᵉ mixte"],
+   correct:2,
+   exp:"-io, -is, -ire → 4ᵉ conjugaison."},
+
+  {q:"« caedo, -is, -ere » appartient à quelle conjugaison ?",
+   opts:["1ʳᵉ","2ᵉ","3ᵉ","4ᵉ"],
+   correct:2,
+   exp:"-o, -is, -ere → 3ᵉ conjugaison."},
+
+  // --- Traductions ---
+  {q:"Quel verbe latin signifie « mettre en mouvement » ?",
+   opts:["animo, -as, -are","ago, -is, -ere","caedo, -is, -ere","cingo, -is, -ere"],
+   correct:1,
+   exp:"ago, -is, -ere, egi, actum = mettre en mouvement."},
+
+  {q:"Quel verbe latin signifie « animer, donner la vie » ?",
+   opts:["animo, -as, -are","audio, -is, -ire","censeo, -es, -ere","venio, -is, -ire"],
+   correct:0,
+   exp:"animo, -as, -are, -avi, -atum."},
+
+  {q:"Quel verbe latin signifie « regarder » ?",
+   opts:["audio, -is, -ire","aspicio, -is, -ere","celo, -as, -are","pareo, -es, -ere"],
+   correct:1,
+   exp:"aspicio, -is, -ere, -spexi, -spectum."},
+
+  {q:"Quel verbe latin signifie « entendre » ?",
+   opts:["audio, -is, -ire","aspicio, -is, -ere","censeo, -es, -ere","scribo, -is, -ere"],
+   correct:0,
+   exp:"audio, -is, -ire, -ivi, -itum."},
+
+  {q:"Quel verbe latin signifie « frapper, abattre » ?",
+   opts:["caedo, -is, -ere","cingo, -is, -ere","claudio, -is, -ere","custodio, -is, -ire"],
+   correct:0,
+   exp:"caedo, -is, -ere, cecidi, caesum."},
+
+  {q:"Quel verbe latin signifie « estimer, évaluer » ?",
+   opts:["celo, -as, -are","censeo, -es, -ere","pareo, -es, -ere","ago, -is, -ere"],
+   correct:1,
+   exp:"censeo, -es, -ere, -sui, -sum."},
+
+  {q:"Quel verbe latin signifie « tenir caché » ?",
+   opts:["celo, -as, -are","claudio, -is, -ere","caedo, -is, -ere","cingo, -is, -ere"],
+   correct:0,
+   exp:"celo, -as, -are, -avi, -atum."},
+
+  {q:"Quel verbe latin signifie « ceindre, entourer » ?",
+   opts:["cingo, -is, -ere","claudio, -is, -ere","custodio, -is, -ire","celo, -as, -are"],
+   correct:0,
+   exp:"cingo, -is, -ere, cinxi, cinctum."},
+
+  {q:"Quel verbe latin signifie « fermer, clore » ?",
+   opts:["cingo, -is, -ere","claudio, -is, -ere","custodio, -is, -ire","celo, -as, -are"],
+   correct:1,
+   exp:"claudio, -is, -ere, clausi, clausum."},
+
+  {q:"Quel verbe latin signifie « protéger, défendre » ?",
+   opts:["custodio, -is, -ire","celo, -as, -are","claudio, -is, -ere","pareo, -es, -ere"],
+   correct:0,
+   exp:"custodio, -is, -ire, -ivi, -itum."},
+
+  {q:"Quel verbe latin signifie « écrire » ?",
+   opts:["scribo, -is, -ere","venio, -is, -ire","pareo, -es, -ere","ago, -is, -ere"],
+   correct:0,
+   exp:"scribo, -is, -ere, scripsi, scriptum."},
+
+  {q:"Quel verbe latin signifie « venir » ?",
+   opts:["venio, -is, -ire","audio, -is, -ire","custodio, -is, -ire","aspicio, -is, -ere"],
+   correct:0,
+   exp:"venio, -is, -ire, veni, ventum."},
+
+  {q:"Quel verbe latin signifie « apparaître » ?",
+   opts:["pareo, -es, -ere","censeo, -es, -ere","audio, -is, -ire","venio, -is, -ire"],
+   correct:0,
+   exp:"pareo, -es, -ere, -ui, -itum."},
+
+  // --- Radicaux ---
+  {q:"Quels sont les 3 radicaux de « ago, -is, -ere, egi, actum » ?",
+   opts:["ag- / eg- / act-","ago- / egi- / actum-","ag- / agi- / agt-","a- / e- / ac-"],
+   correct:0,
+   exp:"ag- (présent) / eg- (parfait) / act- (supin)."},
+
+  {q:"Quels sont les 3 radicaux de « audio, -is, -ire, -ivi, -itum » ?",
+   opts:["aud- / audiv- / audit-","audi- / audiv- / audit-","audio- / audivi- / auditu-","au- / audi- / aud-"],
+   correct:1,
+   exp:"audi- (présent) / audiv- (parfait) / audit- (supin)."},
+
+  {q:"Quels sont les 3 radicaux de « scribo, -is, -ere, scripsi, scriptum » ?",
+   opts:["scrib- / scripsi- / script-","scrib- / scrips- / script-","scri- / scrip- / scrip-","scribo- / scripsi- / scriptum-"],
+   correct:1,
+   exp:"scrib- / scrips- / script-."},
+
+  {q:"Quels sont les 3 radicaux de « venio, -is, -ire, veni, ventum » ?",
+   opts:["ven- / veni- / vent-","veni- / ven- / vent-","venio- / veni- / ventum-","ve- / ven- / v-"],
+   correct:1,
+   exp:"veni- (présent) / ven- (parfait) / vent- (supin)."}
+];
+
+/* ---------- GÉNÉRATION DU QUIZ ---------- */
+const quizContainer = document.getElementById('quizContainer');
+
+function buildQuiz(){
+  quizContainer.innerHTML = '';
+  questions.forEach((item, idx)=>{
+    const block = document.createElement('div');
+    block.className = 'q';
+    block.dataset.index = idx;
+
+    const num = document.createElement('div');
+    num.className = 'qnum';
+    num.textContent = `Question ${idx+1} / ${questions.length}`;
+    block.appendChild(num);
+
+    const text = document.createElement('div');
+    text.className = 'qtext';
+    text.textContent = item.q;
+    block.appendChild(text);
+
+    const opts = document.createElement('div');
+    opts.className = 'options';
+
+    item.opts.forEach((opt, i)=>{
+      const label = document.createElement('label');
+      const input = document.createElement('input');
+      input.type = 'radio';
+      input.name = 'q'+idx;
+      input.value = i;
+      const span = document.createElement('span');
+      span.textContent = opt;
+      label.appendChild(input);
+      label.appendChild(span);
+      opts.appendChild(label);
+    });
+    block.appendChild(opts);
+
+    const fb = document.createElement('div');
+    fb.className = 'feedback';
+    block.appendChild(fb);
+
+    quizContainer.appendChild(block);
+  });
+
+  document.getElementById('score').innerHTML = '';
+}
+
+/* ---------- VÉRIFICATION ---------- */
+document.getElementById('checkBtn').addEventListener('click', ()=>{
+  let score = 0;
+  let unanswered = 0;
+
+  questions.forEach((item, idx)=>{
+    const block = quizContainer.querySelector(`.q[data-index="${idx}"]`);
+    const labels = block.querySelectorAll('.options label');
+    const fb = block.querySelector('.feedback');
+    const selected = block.querySelector('input[type="radio"]:checked');
+
+    // Réinitialiser les styles
+    labels.forEach(l=>l.classList.remove('correct','wrong'));
+    fb.classList.remove('show','ok','ko');
+
+    if(!selected){
+      unanswered++;
+      fb.textContent = "⚠️ Tu n'as pas répondu à cette question.";
+      fb.classList.add('show');
+      // Montrer la bonne réponse
+      labels[item.correct].classList.add('correct');
+      return;
+    }
+
+    const chosen = parseInt(selected.value, 10);
+
+    if(chosen === item.correct){
+      score++;
+      labels[chosen].classList.add('correct');
+      fb.textContent = "✅ Bonne réponse ! " + item.exp;
+      fb.classList.add('show','ok');
+    } else {
+      labels[chosen].classList.add('wrong');
+      labels[item.correct].classList.add('correct');
+      fb.textContent = "❌ Mauvaise réponse. " + item.exp;
+      fb.classList.add('show','ko');
+    }
+  });
+
+  const total = questions.length;
+  const pct = Math.round((score/total)*100);
+  let msg = `<span class="big">${score} / ${total}</span> &nbsp;(${pct}%)`;
+  if(unanswered>0) msg += ` — ${unanswered} sans réponse`;
+  if(pct === 100) msg += "<br>🏆 Parfait !";
+  else if(pct >= 80) msg += "<br>👏 Très bien !";
+  else if(pct >= 50) msg += "<br>💪 Continue, tu y es presque !";
+  else msg += "<br>📚 Relis la fiche et retente ta chance !";
+
+  document.getElementById('score').innerHTML = msg;
+  document.getElementById('score').scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+/* ---------- RECOMMENCER ---------- */
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  buildQuiz();
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+/* ---------- INITIALISATION ---------- */
+buildQuiz();
+</script>
+
+</body>
+</html>
